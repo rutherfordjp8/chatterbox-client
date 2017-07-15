@@ -43,12 +43,33 @@ app.fetch = function() {
 app.clearMessages = () => $('#chats').html(' ');
 
 
-app.renderMessage = (message) => $('#chats').prepend(`${message.username}: ${message.text}`);
+app.renderMessage = (message) => {
+  username = message.username;
+  text = message.text;
+  $('#chats').prepend('<span class="chat">' + '<span class="username" onclick="app.handleUsernameClick()">' + username + ':' + '</span>' +
+                       '<p>' + text + '</p>' + '</span>');
+  //$('#chats').prepend(`<p>${message.username}: ${message.text}<p>`);
+};
 
+app.renderRoom = (room) => {
+  $('#roomSelect').prepend('<option value=' + room + '>' + room + '</option>');
+};
 
+app.handleUsernameClick = function () {
+  
+};
 
+app.handleSubmit = function () {
+  
+};
 
+$(document).ready(function() {
 
+  $('#send .submit').submit(function(event) {
+    app.handleSubmit();
+  });
+
+});
 
 
 

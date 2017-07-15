@@ -3,7 +3,19 @@ var app = {};
 
 app.server = 'http://parse.sfm6.hackreactor.com/chatterbox/classes/messages';
 
-app.init = function() {};
+app.init = function() {
+
+  var results = this.fetch();
+  setTimeout(function() {
+    results = results.responseJSON.results;
+    for ( var i = 0; i < 30; i++ ) {
+      app.renderMessage(results[i]);
+    }
+  }, 2000
+  );
+  
+  
+};
 
 app.send = function(message) {
   $.ajax({
@@ -11,7 +23,7 @@ app.send = function(message) {
     url: this.server,
     type: 'POST',
     data: JSON.stringify(message),
-    contentType: 'application/json',
+    contentType: 'json',
     success: (data) => {
       console.log('chatterbox: Message sent');
     },
@@ -24,12 +36,11 @@ app.send = function(message) {
 
 app.fetch = function() {
 
-  $.ajax({
+  var output = $.ajax({
   // This is the url you should use to communicate with the parse API server.
     url: this.server,
     type: 'GET',
-    data: JSON.stringify(message),
-    contentType: 'application/json',
+    contentType: 'json',
     success: (data) => {
       console.log('chatterbox: Message received');
     },
@@ -38,6 +49,7 @@ app.fetch = function() {
       console.error('chatterbox: Failed to receive message', data);
     }
   });
+  return output;
 };
 
 app.clearMessages = () => $('#chats').html(' ');
@@ -46,8 +58,8 @@ app.clearMessages = () => $('#chats').html(' ');
 app.renderMessage = (message) => {
   username = message.username;
   text = message.text;
-  $('#chats').prepend('<span class="chat">' + '<span class="username" onclick="app.handleUsernameClick()">' + username + ':' + '</span>' +
-                       '<p>' + text + '</p>' + '</span>');
+  $('#chats').prepend('<div class="chat">' + '<span class="username" onclick="app.handleUsernameClick()">' + username + ':' + '</span>' +
+                       '<p>' + text + '</p>' + '</div>');
   //$('#chats').prepend(`<p>${message.username}: ${message.text}<p>`);
 };
 
@@ -69,6 +81,9 @@ $(document).ready(function() {
     app.handleSubmit();
   });
 
+  app.init();
+  
+  
 });
 
 
